@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Sentiment Analysis Web App</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+        <script>
+            "use strict";
+
+            function submitForm(oFormElement) {
+                var xhr = new XMLHttpRequest();
+                var filesSelected = document.getElementById("afile").files;
+                if (filesSelected.length > 0) {
+                  var fileToLoad = filesSelected[0];
+
+                  var fileReader = new FileReader();
+
+                  fileReader.onload = function(fileLoadedEvent) {
+                    var srcData = fileLoadedEvent.target.result; // <--- data: base64
+
+                    document.getElementById("imgTest").src = srcData;
+                    // alert("Converted Base64 version is " + document.getElementById("imgTest").innerHTML);
+                    console.log(srcData);
+                    xhr.open(oFormElement.method, oFormElement.action, true);
+                    xhr.send(srcData);
+                  }
+                  fileReader.readAsDataURL(fileToLoad);
+                  xhr.onload = function () {
+                    var result = xhr.responseText;
+                    var resultElement = document.getElementById("result");
+                    resultElement.className = "bg-success";
+                    resultElement.innerHTML = result;
+                  };
+                  return false;
+                }
+ 
+            }
+        </script>
+    </head>
+    <body>
+        
+        <div class="container">
+            <h1>Find which breed your dog got or u got ?</h1>
+            <p>Upload your image below and click submit to find out...</p>
+            
+            <div>
+            <form method="POST" action="https://z0eadua9nk.execute-api.us-east-2.amazonaws.com/prod" onsubmit="return submitForm(this);">
+                <!-- HERE IS WHERE YOU NEED TO ENTER THE API URL -->
+                
+                <div class="form-group">
+                    <label for="review">Upload image</label>
+                    <input type="file" name="afile" id="afile" accept="image/*" />
+                </div>
+                <button type="submit" class="btn btn-default">Submit</button>
+            </form>
+            
+            <h1 class="bg-success" id="result"></h1>
+          </div>
+        </div>
+        <div id="imgTest" width="60" height="60"></div>
+    </body>
+</html>
